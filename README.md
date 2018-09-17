@@ -10,3 +10,6 @@ An example project created to show an advanced use case of IGListKit and to full
 - [x] Multiple Story support
 - [x] Multiple Story Items per Story (videos)
 - [x] Automatic scrolling when Story is done
+
+## Example clips
+
