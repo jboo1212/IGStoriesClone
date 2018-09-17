@@ -14,5 +14,5 @@ An example project created to show an advanced use case of IGListKit and to full
 ## Example clips
 
 <p align="center">
-  <img src="https://github.com/jboo1212/IGStoriesClone/blob/master/IGstories1.mp4">
+  <img src="https://github.com/jboo1212/IGStoriesClone/blob/master/IGstories1.gif">
 </p>
