@@ -39,7 +39,39 @@ An example project created to show an advanced use case of IGListKit and to full
 For customization, go to ViewController.swift and the Assets folder and add your own movies/profile pictures.
 
 ```swift
- private func modelGenerators() -> [Story] {
+import UIKit
+import IGListKit
+
+class ViewController: UIViewController, ListAdapterDataSource {
+    
+    private var storyModel = [StoryModel]()
+    
+    lazy var adapter: ListAdapter = {
+        return ListAdapter(updater: ListAdapterUpdater(), viewController: self)
+    }()
+    
+    let collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.backgroundColor = .white
+        return collectionView
+    }()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        adapter.performUpdates(animated: true, completion: nil)
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        let stories = modelGenerators()
+        let model = StoryModel(stories: stories)
+        storyModel = [model]
+        view.addSubview(collectionView)
+        adapter.collectionView = collectionView
+        adapter.dataSource = self
+    }
+    
+    private func modelGenerators() -> [Story] {
         // Users
         let user1 = User(id: UUID().uuidString, profilePic: Bundle.main.url(forResource: "jeromeythehomie", withExtension: "jpg")!, handle: "jeromeythehomie")
         let user2 = User(id: UUID().uuidString, profilePic: Bundle.main.url(forResource: "mattlee077", withExtension: "jpg")!, handle: "mattlee077")
@@ -66,6 +98,23 @@ For customization, go to ViewController.swift and the Assets folder and add your
         return stories
 
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        collectionView.frame = view.bounds
+    }
+    
+    func objects(for listAdapter: ListAdapter) -> [ListDiffable] {
+        return storyModel
+    }
+    
+    func listAdapter(_ listAdapter: ListAdapter, sectionControllerFor object: Any) -> ListSectionController {        
+        return StorySectionController()
+    }
+    
+    func emptyView(for listAdapter: ListAdapter) -> UIView? {return nil}
+}
+
 ```
 
 
