@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		91065FB6214F3A3500BDF1F0 /* igstories1.1.gif in Resources */ = {isa = PBXBuildFile; fileRef = 91065FB5214F3A3500BDF1F0 /* igstories1.1.gif */; };
 		914D2970214A3EA3006F3FEF /* InstagramStoriesProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914D296F214A3EA3006F3FEF /* InstagramStoriesProtocols.swift */; };
 		914DC06A21260019005F76DD /* StoryPlayerProgressTrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914DC06921260019005F76DD /* StoryPlayerProgressTrackerView.swift */; };
 		9153650C2116E0BF00442A99 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9153650B2116E0BF00442A99 /* AppDelegate.swift */; };
@@ -47,6 +48,7 @@
 		5E909DF39E0979787E7D78C1 /* Pods_InstagramStoriesClone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_InstagramStoriesClone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		704BFF973C49E27609F0D527 /* Pods-InstagramStoriesClone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramStoriesClone.debug.xcconfig"; path = "Pods/Target Support Files/Pods-InstagramStoriesClone/Pods-InstagramStoriesClone.debug.xcconfig"; sourceTree = "<group>"; };
 		8E58C7C4D77F8FE2A33E935E /* Pods-InstagramStoriesClone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramStoriesClone.release.xcconfig"; path = "Pods/Target Support Files/Pods-InstagramStoriesClone/Pods-InstagramStoriesClone.release.xcconfig"; sourceTree = "<group>"; };
+		91065FB5214F3A3500BDF1F0 /* igstories1.1.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = igstories1.1.gif; path = ../../../../../Desktop/igstories1.1.gif; sourceTree = "<group>"; };
 		914D296F214A3EA3006F3FEF /* InstagramStoriesProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstagramStoriesProtocols.swift; sourceTree = "<group>"; };
 		914DC06921260019005F76DD /* StoryPlayerProgressTrackerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryPlayerProgressTrackerView.swift; sourceTree = "<group>"; };
 		915365082116E0BF00442A99 /* InstagramStoriesClone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InstagramStoriesClone.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,6 +106,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		91065FB4214F3A2200BDF1F0 /* Demo Videos */ = {
+			isa = PBXGroup;
+			children = (
+				91065FB5214F3A3500BDF1F0 /* igstories1.1.gif */,
+			);
+			path = "Demo Videos";
+			sourceTree = "<group>";
+		};
 		914D296E214A3E7B006F3FEF /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
@@ -133,6 +143,7 @@
 		9153650A2116E0BF00442A99 /* InstagramStoriesClone */ = {
 			isa = PBXGroup;
 			children = (
+				91065FB4214F3A2200BDF1F0 /* Demo Videos */,
 				914D296E214A3E7B006F3FEF /* Protocols */,
 				91AF9AC72118DE5900A34A65 /* Animations */,
 				91AF9AB2211820A000A34A65 /* Assets */,
@@ -289,6 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				91AAEDF8214F269500BBFD5C /* jeromeythehomie.jpg in Resources */,
+				91065FB6214F3A3500BDF1F0 /* igstories1.1.gif in Resources */,
 				91AAEDF7214F269500BBFD5C /* mattlee077.jpg in Resources */,
 				91AAEDEF214F268700BBFD5C /* IMG_1704.mov in Resources */,
 				91AAEDF1214F268700BBFD5C /* IMG_1705.mov in Resources */,
