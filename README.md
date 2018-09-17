@@ -13,10 +13,17 @@ An example project created to show an advanced use case of IGListKit and to full
 
 ## Example clips
 
-<p>
+## Clips 1-2
+
   <img src = "https://github.com/jboo1212/IGStoriesClone/blob/master/igstories1.gif">
   <img src = "https://github.com/jboo1212/IGStoriesClone/blob/master/igstories2.gif">
   <img src = "https://github.com/jboo1212/IGStoriesClone/blob/master/igstories3.gif">
   <img src = "https://github.com/jboo1212/IGStoriesClone/blob/master/igstories4.gif">
   <img src = "https://github.com/jboo1212/IGStoriesClone/blob/master/igstories5.gif">
-</p>
+  
+## Clips 3-4
+  <img src = "https://github.com/jboo1212/IGStoriesClone/blob/master/igstories3.gif">
+  <img src = "https://github.com/jboo1212/IGStoriesClone/blob/master/igstories4.gif">
+
+## Clip 5
+  <img src = "https://github.com/jboo1212/IGStoriesClone/blob/master/igstories5.gif">
