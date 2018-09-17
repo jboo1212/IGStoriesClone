@@ -54,6 +54,14 @@ class StoryPlayerProgressTrackerView: UIStackView {
         let currentTrackView = trackViews[currentTrack]
         currentTrackView.performTrackAnimation(duration: currentTrackLength, currentTrack: currentTrack)
     }
+    
+    public func trackViewCleanup() {
+        for trackView in trackViews {
+            removeArrangedSubview(trackView)
+            trackView.removeFromSuperview()
+        }
+        trackViews.removeAll(keepingCapacity: false)
+    }
 }
 
 // MARK: ProgressTrackViewDelegate
@@ -73,11 +81,7 @@ extension StoryPlayerProgressTrackerView: ProgressTrackViewDelegate {
         else {
             currentTrack = 0
             storyPlayerProgressDelegate?.didEndPlayingTracks()
-            for trackView in trackViews {
-                removeArrangedSubview(trackView)
-                trackView.removeFromSuperview()
-            }
-            trackViews.removeAll(keepingCapacity: false)
+            trackViewCleanup()
         }
     }
 }

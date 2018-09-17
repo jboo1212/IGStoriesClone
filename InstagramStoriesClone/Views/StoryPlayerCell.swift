@@ -36,6 +36,7 @@ class StoryPlayerCell: UICollectionViewCell {
         super.prepareForReuse()
         layer.transform = CATransform3DIdentity
         adjustAnchorPoint()
+        playerBackingView.playerProgressTrackerView.trackViewCleanup()
         playerBackingView.player.removeAllItems()
         playerBackingView.oldStoryItems.removeAll()
         playerBackingView.shouldResume = false
