@@ -33,10 +33,13 @@ An example project created to show an advanced use case of IGListKit and to full
 </p>
 
 
-## Usage
-- Go to your terminal and clone the repository...Done!
+## Installation
 
-For customization, go to ViewController.swift and the Assets folder and add your own movies/profile pictures.
+Go to your terminal and clone the repository...Done!
+
+## Usage
+
+For customization, go to ViewController.swift and the Assets folder and add your own movies/profile pictures locally
 
 ```swift
 import UIKit
@@ -117,4 +120,17 @@ class ViewController: UIViewController, ListAdapterDataSource {
 
 ```
 
+## To-do and future releases
+- [ ] Go back a story item with a tap gesture
+- [ ] Go forward a story item with a tap gesture
+- [ ] Fix AVQueuePlayer "flickering" between Stories
+- [ ] Automatic transition if there are no Stories left
 
+
+## <a name="author"> Author
+  
+Jerome Isaacs
+
+- [GitHub](https://github.com/jboo1212)
+- [Facebook](https://www.facebook.com/jerome.isaacs.12)
+- Gmail: jerome.isaacs@gmail.com
