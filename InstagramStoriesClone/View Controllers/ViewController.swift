@@ -30,15 +30,13 @@ class ViewController: UIViewController, ListAdapterDataSource {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let stories = modelGenerators()
-        let model = StoryModel(stories: stories)
-        storyModel = [model]
+        storyModel = [StoryModel(stories: storiesGenerators())]
         view.addSubview(collectionView)
         adapter.collectionView = collectionView
         adapter.dataSource = self
     }
     
-    private func modelGenerators() -> [Story] {
+    private func storiesGenerators() -> [Story] {
 
         let getUserFromUsername: (String) -> User = {
           let imagePath = Bundle.main.url(forResource: $0, withExtension: "jpg")!
