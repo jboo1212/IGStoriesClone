@@ -39,31 +39,28 @@ class ViewController: UIViewController, ListAdapterDataSource {
     }
     
     private func modelGenerators() -> [Story] {
-        // Users
-        let user1 = User(id: UUID().uuidString, profilePic: Bundle.main.url(forResource: "jeromeythehomie", withExtension: "jpg")!, handle: "jeromeythehomie")
-        let user2 = User(id: UUID().uuidString, profilePic: Bundle.main.url(forResource: "mattlee077", withExtension: "jpg")!, handle: "mattlee077")
-        let user3 = User(id: UUID().uuidString, profilePic: Bundle.main.url(forResource: "asethics", withExtension: "jpg")!, handle: "asethics")
-        let user4 = User(id: UUID().uuidString, profilePic: Bundle.main.url(forResource: "nat.pat33", withExtension: "jpg")!, handle: "nat.pat33")
-        
-        // Story Items
-        let storyItem1 = StoryItem(id: UUID().uuidString, url: Bundle.main.url(forResource: "IMG_0021", withExtension: "mov")!)
-        let storyItem2 = StoryItem(id: UUID().uuidString, url: Bundle.main.url(forResource: "IMG_0460", withExtension: "mov")!)
-        let storyItem3 = StoryItem(id: UUID().uuidString, url: Bundle.main.url(forResource: "IMG_1539", withExtension: "mov")!)
-        let storyItem4 = StoryItem(id: UUID().uuidString, url: Bundle.main.url(forResource: "IMG_1636", withExtension: "mov")!)
-        let storyItem5 = StoryItem(id: UUID().uuidString, url: Bundle.main.url(forResource: "IMG_1691", withExtension: "mov")!)
-        let storyItem6 = StoryItem(id: UUID().uuidString, url: Bundle.main.url(forResource: "IMG_1704", withExtension: "mov")!)
-        let storyItem7 = StoryItem(id: UUID().uuidString, url: Bundle.main.url(forResource: "IMG_1705", withExtension: "mov")!)
-        let storyItem8 = StoryItem(id: UUID().uuidString, url: Bundle.main.url(forResource: "IMG_1706", withExtension: "mov")!)
-        let storyItem9 = StoryItem(id: UUID().uuidString, url: Bundle.main.url(forResource: "IMG_1707", withExtension: "mov")!)
 
-        // Stories
-        let story1 = Story(user: user1, isRead: false, storyItems: [storyItem1, storyItem2, storyItem3])
-        let story2 = Story(user: user2, isRead: false, storyItems: [storyItem4, storyItem5, storyItem6, storyItem7])
-        let story3 = Story(user: user3, isRead: false, storyItems: [storyItem8])
-        let story4 = Story(user: user4, isRead: false, storyItems: [storyItem9])
-        let stories = [story1, story2, story3, story4]
-        return stories
+        let getUserFromUsername: (String) -> User = {
+          let imagePath = Bundle.main.url(forResource: $0, withExtension: "jpg")!
+          return User(profilePic: imagePath, handle: $0)
+        }
 
+        let getStoryFromImage: ([String]) -> [StoryItem] = {
+          return $0
+            .compactMap { Bundle.main.url(forResource: $0, withExtension: "mov") }
+            .map{ StoryItem(id: UUID().uuidString, url: $0) }
+        }
+
+        let userWithStories: [String: [String]] = [
+            "jeromeythehomie" : ["IMG_0021", "IMG_0460", "IMG_1539"],
+            "mattlee077": ["IMG_1636", "IMG_1691", "IMG_1704", "IMG_1705"],
+            "asethics": ["IMG_1706"],
+            "nat.pat33": ["IMG_1707"]
+        ]
+
+        return userWithStories.map { (handler, stories ) in
+            return Story(user: getUserFromUsername(handler), isRead: false, storyItems: getStoryFromImage(stories))
+        }
     }
     
     override func viewDidLayoutSubviews() {

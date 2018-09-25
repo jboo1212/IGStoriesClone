@@ -15,7 +15,7 @@ final class User: ListDiffable {
     let profilePic: URL
     let handle: String
     
-    init(id: String, profilePic: URL, handle: String) {
+    init(id: String = UUID().uuidString, profilePic: URL, handle: String) {
         self.id = id
         self.profilePic = profilePic
         self.handle = handle
