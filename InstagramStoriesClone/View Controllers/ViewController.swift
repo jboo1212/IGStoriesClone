@@ -9,10 +9,8 @@
 import UIKit
 import IGListKit
 
-class ViewController: UIViewController, ListAdapterDataSource {
-    
-    private var storyModel = [StoryModel]()
-    
+class ViewController: UIViewController {
+
     lazy var adapter: ListAdapter = {
         return ListAdapter(updater: ListAdapterUpdater(), viewController: self)
     }()
@@ -30,7 +28,6 @@ class ViewController: UIViewController, ListAdapterDataSource {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        storyModel = [StoryModel(stories: storiesGenerators())]
         view.addSubview(collectionView)
         adapter.collectionView = collectionView
         adapter.dataSource = self
@@ -45,15 +42,12 @@ class ViewController: UIViewController, ListAdapterDataSource {
 
         let getStoryFromImage: ([String]) -> [StoryItem] = {
           return $0
-            .compactMap { Bundle.main.url(forResource: $0, withExtension: "mov") }
+            .compactMap { URL(string: $0) }
             .map{ StoryItem(id: UUID().uuidString, url: $0) }
         }
 
         let userWithStories: [String: [String]] = [
-            "jeromeythehomie" : ["IMG_0021", "IMG_0460", "IMG_1539"],
-            "mattlee077": ["IMG_1636", "IMG_1691", "IMG_1704", "IMG_1705"],
-            "asethics": ["IMG_1706"],
-            "nat.pat33": ["IMG_1707"]
+            "jeromeythehomie" : ["https://i.imgur.com/OHbkxgr.mp4", "https://i.imgur.com/WvtexT0.mp4", "https://i.imgur.com/fRHHBx2.mp4"]
         ]
 
         return userWithStories.map { (handler, stories ) in
@@ -65,15 +59,19 @@ class ViewController: UIViewController, ListAdapterDataSource {
         super.viewDidLayoutSubviews()
         collectionView.frame = view.bounds
     }
-    
-    func objects(for listAdapter: ListAdapter) -> [ListDiffable] {
-        return storyModel
-    }
-    
-    func listAdapter(_ listAdapter: ListAdapter, sectionControllerFor object: Any) -> ListSectionController {        
-        return StorySectionController()
-    }
-    
-    func emptyView(for listAdapter: ListAdapter) -> UIView? {return nil}
+
 }
 
+extension ViewController: ListAdapterDataSource {
+    func objects(for listAdapter: ListAdapter) -> [ListDiffable] {
+        return [StoryModel(stories: storiesGenerators())]
+    }
+
+    func listAdapter(_ listAdapter: ListAdapter, sectionControllerFor object: Any) -> ListSectionController {
+        return StorySectionController()
+    }
+
+    func emptyView(for listAdapter: ListAdapter) -> UIView? {
+        return nil
+    }
+}

@@ -66,6 +66,8 @@ class StoryCell: UICollectionViewCell {
     
     private func setupConstraints() {
         let height = contentView.bounds.height.rounded(.down)
+        containerView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+        containerView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
         containerView.heightAnchor.constraint(equalToConstant: height - 15).isActive = true
         containerView.widthAnchor.constraint(equalToConstant: height - 15).isActive = true
         profilePicImageView.heightAnchor.constraint(equalToConstant: height - 25).isActive = true
