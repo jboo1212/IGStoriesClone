@@ -129,6 +129,8 @@ class ViewController: UIViewController, ListAdapterDataSource {
 - [ ] Dismissing animation and last cell detection with proper animation
 - [ ] Pull-to-refresh the Stories such that if the Story has been read, we move it to the end.
 - [ ] Fix light gray circle background appearence when read (need help with this one)
+- [ ] ** For some reason there's a bug on iPhone X, XS, etc. where the cube animation is slow (need help with this one)
+
 
 ## <a name="author"> Author
   
