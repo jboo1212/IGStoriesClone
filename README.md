@@ -10,6 +10,9 @@ An example project created to show an advanced use case of IGListKit and to full
 - [x] Multiple Story support
 - [x] Multiple Story Items per Story (videos)
 - [x] Automatic scrolling when Story is done
+- [x] Go back a story item with a tap gesture
+- [x] Go forward a story item with a tap gesture
+- [x] Automatic transition if there are no Stories left
 
 ## Example clips
 
@@ -121,11 +124,11 @@ class ViewController: UIViewController, ListAdapterDataSource {
 ```
 
 ## To-do and future releases
-- [ ] Go back a story item with a tap gesture
-- [ ] Go forward a story item with a tap gesture
-- [ ] Fix AVQueuePlayer "flickering" between Stories
-- [ ] Automatic transition if there are no Stories left
 
+- [ ] Fix AVQueuePlayer "flickering" between Stories
+- [ ] Dismissing animation and last cell detection with proper animation
+- [ ] Pull-to-refresh the Stories such that if the Story has been read, we move it to the end.
+- [ ] Fix light gray circle background appearence when read (need help with this one)
 
 ## <a name="author"> Author
   
