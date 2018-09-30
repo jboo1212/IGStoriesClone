@@ -15,6 +15,7 @@ class StoryPlayerProgressTrackerView: UIStackView {
     private var currentTrack: Int = 0
     public var totalTracks: Int = 0
     public var currentTrackLength: Double = 0
+    public var isLastCell: Bool = false
     
     private var trackViews = [TrackView]()
     
@@ -36,6 +37,23 @@ class StoryPlayerProgressTrackerView: UIStackView {
         alignment = .center
         distribution = .fillProportionally
         spacing = 2
+    }
+    
+    public func skipTrack(forTrack track: Int) {
+        trackViews[track].tapDirection = .skip
+        trackViews[track].skipAnimation()
+    }
+    
+    public func rewindTrack(forTrack track: Int) {
+        let track = trackViews[track]
+        if isLastCell {
+            track.tapDirection = .none
+            track.startOver()
+        }
+        else {
+            track.tapDirection = .rewind
+            track.rewindAnimation()
+        }
     }
     
     private func createTracks() {
@@ -72,16 +90,22 @@ class StoryPlayerProgressTrackerView: UIStackView {
  Else, we've finished watching the tracks and we start back at 0 and remove the track views from the stack view.
  */
 extension StoryPlayerProgressTrackerView: ProgressTrackViewDelegate {
-    func didFinishAnimatingTrack(forTrack track: Int) {
-        currentTrack += 1
-        let shouldPlayNextTrack = storyPlayerProgressDelegate?.shouldBeginPlayingNextTrack(forTrack: currentTrack) ?? false
+    func didFinishAnimatingTrack(forTrack track: Int, tapDirection direction: TapDirection) {
+        switch direction {
+        case .none, .skip:
+            currentTrack += 1
+        case .rewind:
+            currentTrack -= 1
+        }
+        let shouldPlayNextTrack = storyPlayerProgressDelegate?.shouldBeginPlayingNextTrack(forTrack: currentTrack, tapDirection: direction) ?? false
         if shouldPlayNextTrack {
             return
         }
         else {
             currentTrack = 0
-            storyPlayerProgressDelegate?.didEndPlayingTracks()
+            storyPlayerProgressDelegate?.didEndPlayingTracks(tapDirection: direction)
             trackViewCleanup()
+            isLastCell = false
         }
     }
 }
@@ -92,6 +116,7 @@ class TrackView: UIView {
     
     public weak var progressTrackViewDelegate: ProgressTrackViewDelegate?
     private var trackAnimator: UIViewPropertyAnimator?
+    public var tapDirection: TapDirection = .none
     
     private let segmentView: UIView = {
         let view = UIView()
@@ -103,7 +128,6 @@ class TrackView: UIView {
         super.init(frame: frame)
         addSubview(segmentView)
         NotificationCenter.default.addObserver(self, selector: #selector(storyWillPause), name: .StoryWillPause, object: nil)
-//        NotificationCenter.default.addObserver(self, selector: #selector(storyWillRewind), name: .StoryWillRewind, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(storyWillResume(_:)), name: .StoryWillResume, object: superview)
     }
     
@@ -128,10 +152,16 @@ class TrackView: UIView {
         }
     }
     
-    // MARK: TODO
-    @objc private func storyWillRewind() {
+    public func rewindAnimation() {
         trackAnimator?.fractionComplete = 0
-        trackAnimator?.stopAnimation(true)
+        trackAnimator?.stopAnimation(false)
+        trackAnimator?.finishAnimation(at: .start)
+    }
+    
+    public func skipAnimation() {
+        trackAnimator?.fractionComplete = 1
+        trackAnimator?.stopAnimation(false)
+        trackAnimator?.finishAnimation(at: .end)
     }
 
     private func pauseAnimation() {
@@ -139,7 +169,11 @@ class TrackView: UIView {
         trackAnimator.pauseAnimation()
     }
     
-    private func resumeAnimation() {
+    public func startOver() {
+        trackAnimator?.fractionComplete = 0
+    }
+    
+    public func resumeAnimation() {
         trackAnimator?.fractionComplete = 0
         trackAnimator?.startAnimation()
     }
@@ -160,14 +194,15 @@ class TrackView: UIView {
         trackAnimator?.addCompletion { (position) in
             switch position {
             case .end:
-                if self.segmentView.frame.width == self.bounds.width && self.trackAnimator!.isRunning {
-                    self.progressTrackViewDelegate?.didFinishAnimatingTrack(forTrack: currentTrack)
+                if self.segmentView.frame.width == self.bounds.width && self.trackAnimator!.isRunning || self.trackAnimator?.state == .stopped {
+                    self.progressTrackViewDelegate?.didFinishAnimatingTrack(forTrack: currentTrack, tapDirection: self.tapDirection)
                 }
                 else {
                     self.trackAnimator?.stopAnimation(true)
                 }
-            default: return
+            default: self.progressTrackViewDelegate?.didFinishAnimatingTrack(forTrack: currentTrack, tapDirection: self.tapDirection)
             }
+            self.tapDirection = .none
         }
     }
     

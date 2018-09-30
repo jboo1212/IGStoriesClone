@@ -71,7 +71,7 @@ class CubeCollectionView: UICollectionView {
 //            }
 //            return CATransform3DRotate(identity, degree, 0, -1, 0)
 //        }
-//        
+
         let leftCell: UICollectionViewCell
         let rightCell: UICollectionViewCell
         if isLeftCell {

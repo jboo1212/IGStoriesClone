@@ -26,7 +26,7 @@ class EmbeddedStorySectionController: ListBindingSectionController<Story>, ListB
     // Every section controller will register as an observer if we've advanced, aka, read the story.
     override init() {
         super.init()
-        inset = UIEdgeInsetsMake(10, 5, 10, 0)
+        inset = UIEdgeInsets.init(top: 10, left: 5, bottom: 10, right: 0)
         dataSource = self
         NotificationCenter.default.addObserver(self, selector: #selector(storyHasAdvanced(_ :)), name: .StoryHasAdvanced, object: nil)
     }

@@ -17,6 +17,7 @@ extension NSNotification.Name {
     static let StoryWillResume: NSNotification.Name = NSNotification.Name("storyWillResume")
     static let StoryWillRewind: NSNotification.Name = NSNotification.Name("storyWillRewind")
     static let StoryHasAdvanced: NSNotification.Name = NSNotification.Name("storyHasAdvanced")
+    static let StoryHasSkipped: NSNotification.Name = NSNotification.Name("storyHasSkipped")
 }
 
 class StoryPlayerCell: UICollectionViewCell {
@@ -36,6 +37,8 @@ class StoryPlayerCell: UICollectionViewCell {
         super.prepareForReuse()
         layer.transform = CATransform3DIdentity
         adjustAnchorPoint()
+        playerBackingView.observedCount = 0
+        playerBackingView.player.resetItems()
         playerBackingView.playerProgressTrackerView.trackViewCleanup()
         playerBackingView.player.removeAllItems()
         playerBackingView.oldStoryItems.removeAll()
@@ -75,8 +78,10 @@ private var playerViewControllerKVOContext = 0
 // Player Backing View handles the main logic of playing and pausing tracks.
 class PlayerBackingView: UIView {
     
+    public var isLastCell: Bool = false
+    
     // Main player to use for the AVPlayerItems
-    @objc public var player = AVQueuePlayer()
+    @objc public var player = JPlayer()
     
     // Keep track of the items since cell reuse
     public var oldStoryItems = [StoryItem]()
@@ -91,13 +96,19 @@ class PlayerBackingView: UIView {
     public let playerProgressTrackerView = StoryPlayerProgressTrackerView()
     public var currentTrackLength: Double = 0
     
+    // Counter so we don't call animateTrack twice.
+    public var observedCount: Int = 0
+    
+    public var hasTapped: Bool = false
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(playerView)
         playerView.addSubview(playerProgressTrackerView)
         playerView.player = player
+        player.delegate = self
         playerProgressTrackerView.storyPlayerProgressDelegate = self
-        addObserver(self, forKeyPath: #keyPath(player.currentItem.duration), options: [.new, .initial], context: &playerViewControllerKVOContext)
+        addObserver(self, forKeyPath: #keyPath(player.currentItem.duration), options: [.initial, .new], context: &playerViewControllerKVOContext)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -126,16 +137,18 @@ class PlayerBackingView: UIView {
              `player.currentItem` is nil.
              */
             let newDuration: CMTime
-            if let newDurationAsValue = change?[NSKeyValueChangeKey.newKey] as? NSValue {
+            if let newDurationAsValue = change?[NSKeyValueChangeKey.newKey] as? NSValue{
                 newDuration = newDurationAsValue.timeValue
             }
             else {
-                newDuration = kCMTimeZero
+                newDuration = CMTime.zero
             }
-            // Tell the Story Player about the current duration and animate the track.
             playerProgressTrackerView.currentTrackLength = CMTimeGetSeconds(newDuration)
             currentTrackLength = CMTimeGetSeconds(newDuration)
-            if playerProgressTrackerView.currentTrackLength > 0 {
+            if currentTrackLength > 0 {
+                observedCount += 1
+            }
+            if playerProgressTrackerView.currentTrackLength > 0 && observedCount == 1 {
                 playerProgressTrackerView.animateCurrentTrack()
             }
         }
@@ -157,16 +170,13 @@ class PlayerBackingView: UIView {
     public func pause(willAdvance: Bool) {
         if !willAdvance {
             player.pause()
-            let beginningTime = CMTimeMakeWithSeconds(0, 1)
-            player.seek(to: beginningTime, toleranceBefore: kCMTimeZero, toleranceAfter: kCMTimeZero)
+            let beginningTime = CMTimeMakeWithSeconds(0, preferredTimescale: 1)
+            player.seek(to: beginningTime, toleranceBefore: CMTime.zero, toleranceAfter: CMTime.zero)
             shouldResume = true
             NotificationCenter.default.post(name: .StoryWillPause, object: nil)
         }
     }
     
-    // MARK: TODO
-    public func rewind() {}
-
     /*
      Since cells are re-used and we do not want to insert "New" Story items
      back into the array (which is not permitted and will cause your application to crash),
@@ -181,7 +191,9 @@ class PlayerBackingView: UIView {
         if oldStoryItems.isEmpty {
             oldStoryItems = storyItems
             for item in storyItems {
-                 player.insert(AVPlayerItem(url: item.url), after: player.items().last)
+                let item = AVPlayerItem(url: item.url)
+                player.insert(item, after: player.items().last)
+                player.addCopiedItems(forItem: item)
             }
         }
         else if diffInsertIndices.count >= 1 {
@@ -189,7 +201,9 @@ class PlayerBackingView: UIView {
             guard let startInsertIndex = diffInsertIndices.first else { return }
             for item in startInsertIndex..<storyItems.count {
                 let url = storyItems[item].url
-                player.insert(AVPlayerItem(url: url), after: player.items().last)
+                let item = AVPlayerItem(url: url)
+                player.insert(item, after: player.items().last)
+                player.addCopiedItems(forItem: item)
             }
         }
         setupTracker()
@@ -226,27 +240,62 @@ class PlayerBackingView: UIView {
 // MARK: StoryPlayerProgressDelegate
 
 extension PlayerBackingView: StoryPlayerProgressDelegate {
-    func shouldBeginPlayingNextTrack(forTrack track: Int) -> Bool {
-        if track + 1 > oldStoryItems.count {
+    
+    func shouldBeginPlayingNextTrack(forTrack track: Int, tapDirection direction: TapDirection) -> Bool {
+        observedCount = 0
+        if track + 1 > oldStoryItems.count || track == -1 {
             return false
         }
         else {
-            player.advanceToNextItem()
+            if hasTapped {
+                player.advanceToNextItem()
+            }
+            else {
+                player.skip(skipsAutomatically: true)
+            }
+            hasTapped = false
+            player.goToStart()
             return true
         }
     }
 
-    func didEndPlayingTracks() {
-        NotificationCenter.default.post(name: .StoryWillAdvance, object: self)
+    // Depending on which direction that was tapped that triggered an end will dictate which Notification we will need to post.
+    func didEndPlayingTracks(tapDirection direction: TapDirection) {
+        switch direction {
+        case .none, .skip:
+            NotificationCenter.default.post(name: .StoryWillAdvance, object: nil)
+        case .rewind:
+            NotificationCenter.default.post(name: .StoryWillRewind, object: nil)
+        }
+    }
+}
+
+// MARK: JPlayerDelegate
+
+extension PlayerBackingView: JPlayerDelegate {
+    func willSkipItem(_ player: JPlayer, currentIndex: Int, tapDirection direction: TapDirection) {
+        switch direction {
+        case .skip: playerProgressTrackerView.skipTrack(forTrack: currentIndex)
+        default:
+            if isLastCell {
+                playerProgressTrackerView.isLastCell = true
+                player.goToStart()
+            }
+            playerProgressTrackerView.rewindTrack(forTrack: currentIndex)
+        }
+    }
+    
+    func didSkipItem(_ player: JPlayer, previousItem: AVPlayerItem?, tapDirection direction: TapDirection) {
+        print("did skip item")
     }
 }
 
 // Apple docs https://developer.apple.com/documentation/avfoundation/avplayerlayer
 class PlayerView: UIView {
 
-    @objc var player: AVQueuePlayer? {
+    @objc var player: JPlayer? {
         get {
-            return playerLayer.player as? AVQueuePlayer
+            return playerLayer.player as? JPlayer
         }
         set {
             playerLayer.player = newValue

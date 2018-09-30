@@ -20,7 +20,7 @@ class StoryCell: UICollectionViewCell {
     // Outer circle view for the purple Instagram border
     private let containerView: UIView = {
         let containerView = UIView()
-        containerView.translatesAutoresizingMaskIntoConstraints = false
+//        containerView.translatesAutoresizingMaskIntoConstraints = false
         return containerView
     }()
     
@@ -29,7 +29,7 @@ class StoryCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.isUserInteractionEnabled = true
-        imageView.translatesAutoresizingMaskIntoConstraints = false
+//        imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
@@ -38,7 +38,7 @@ class StoryCell: UICollectionViewCell {
         handle.textAlignment = .center
         handle.font = UIFont.systemFont(ofSize: 12, weight: .light)
         handle.text = "Jeromeythehomie"
-        handle.translatesAutoresizingMaskIntoConstraints = false
+//        handle.translatesAutoresizingMaskIntoConstraints = false
         return handle
     }()
     
@@ -47,8 +47,6 @@ class StoryCell: UICollectionViewCell {
         contentView.addSubview(containerView)
         containerView.addSubview(profilePicImageView)
         contentView.addSubview(handleLabel)
-        setupConstraints()
-        setupCircles()
         profilePicImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tappedProfilePicture)))
     }
     
@@ -57,23 +55,24 @@ class StoryCell: UICollectionViewCell {
     }
     
     private func setupCircles() {
-        let height = contentView.bounds.height.rounded(.down)
+        let containerHeight = containerView.bounds.height.rounded(.down)
+        let profilePictureHeight = profilePicImageView.bounds.height.rounded(.down)
         containerView.layer.borderColor = UIColor(red:0.76, green:0.16, blue:0.64, alpha:1.0).cgColor
         containerView.layer.borderWidth = 2
-        containerView.layer.cornerRadius = (height - 15)/2
-        profilePicImageView.layer.cornerRadius = (height - 25)/2
+        containerView.layer.cornerRadius = containerHeight/2
+        profilePicImageView.layer.cornerRadius = profilePictureHeight/2
     }
     
-    private func setupConstraints() {
-        let height = contentView.bounds.height.rounded(.down)
-        containerView.heightAnchor.constraint(equalToConstant: height - 15).isActive = true
-        containerView.widthAnchor.constraint(equalToConstant: height - 15).isActive = true
-        profilePicImageView.heightAnchor.constraint(equalToConstant: height - 25).isActive = true
-        profilePicImageView.widthAnchor.constraint(equalToConstant: height - 25).isActive = true
-        profilePicImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        profilePicImageView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
-        handleLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor).isActive = true
-        handleLabel.topAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 2).isActive = true
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        containerView.frame = contentView.bounds
+        containerView.frame.size = CGSize(width: containerView.frame.size.width - 15, height: containerView.frame.size.height - 15)
+        profilePicImageView.frame = containerView.bounds
+        profilePicImageView.frame.size = CGSize(width: containerView.bounds.width - 10, height: containerView.bounds.height - 10)
+        profilePicImageView.center = containerView.center
+        handleLabel.frame = CGRect(x: 0, y: contentView.frame.maxY - 15, width: contentView.bounds.width, height: 20)
+        handleLabel.center.x = containerView.center.x
+        setupCircles()
     }
     
     required init?(coder aDecoder: NSCoder) {

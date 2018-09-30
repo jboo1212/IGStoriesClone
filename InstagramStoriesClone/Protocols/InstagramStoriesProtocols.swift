@@ -9,12 +9,12 @@
 import Foundation
 
 protocol ProgressTrackViewDelegate: class {
-    func didFinishAnimatingTrack(forTrack track: Int)
+    func didFinishAnimatingTrack(forTrack track: Int, tapDirection direction: TapDirection)
 }
 
 protocol StoryPlayerProgressDelegate: class {
-    func shouldBeginPlayingNextTrack(forTrack track: Int) -> Bool
-    func didEndPlayingTracks()
+    func shouldBeginPlayingNextTrack(forTrack track: Int, tapDirection direction: TapDirection) -> Bool
+    func didEndPlayingTracks(tapDirection direction: TapDirection)
 }
 
 protocol StoryStatusDelegate: class {

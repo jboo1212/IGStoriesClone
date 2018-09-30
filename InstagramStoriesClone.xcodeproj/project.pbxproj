@@ -16,6 +16,7 @@
 		915365162116E0BF00442A99 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 915365142116E0BF00442A99 /* LaunchScreen.storyboard */; };
 		916BE8C721225CDE00B26DBC /* StoryPlayerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916BE8C621225CDE00B26DBC /* StoryPlayerCell.swift */; };
 		916BE8C9212398ED00B26DBC /* CubeCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 916BE8C8212398ED00B26DBC /* CubeCollectionView.swift */; };
+		91A204D52150629300FFB337 /* JPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91A204D42150629300FFB337 /* JPlayer.swift */; };
 		91AAEDE8214F268700BBFD5C /* IMG_1706.mov in Resources */ = {isa = PBXBuildFile; fileRef = 91AAEDDE214F268700BBFD5C /* IMG_1706.mov */; };
 		91AAEDE9214F268700BBFD5C /* IMG_1691.mov in Resources */ = {isa = PBXBuildFile; fileRef = 91AAEDDF214F268700BBFD5C /* IMG_1691.mov */; };
 		91AAEDEA214F268700BBFD5C /* IMG_1707.mov in Resources */ = {isa = PBXBuildFile; fileRef = 91AAEDE0214F268700BBFD5C /* IMG_1707.mov */; };
@@ -58,6 +59,7 @@
 		915365172116E0C000442A99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		916BE8C621225CDE00B26DBC /* StoryPlayerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryPlayerCell.swift; sourceTree = "<group>"; };
 		916BE8C8212398ED00B26DBC /* CubeCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CubeCollectionView.swift; sourceTree = "<group>"; };
+		91A204D42150629300FFB337 /* JPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JPlayer.swift; sourceTree = "<group>"; };
 		91AAEDDE214F268700BBFD5C /* IMG_1706.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; name = IMG_1706.mov; path = ../../../../../Desktop/IGStoriesCloneAssets/Videos/IMG_1706.mov; sourceTree = "<group>"; };
 		91AAEDDF214F268700BBFD5C /* IMG_1691.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; name = IMG_1691.mov; path = ../../../../../Desktop/IGStoriesCloneAssets/Videos/IMG_1691.mov; sourceTree = "<group>"; };
 		91AAEDE0214F268700BBFD5C /* IMG_1707.mov */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; name = IMG_1707.mov; path = ../../../../../Desktop/IGStoriesCloneAssets/Videos/IMG_1707.mov; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				916BE8C621225CDE00B26DBC /* StoryPlayerCell.swift */,
 				916BE8C8212398ED00B26DBC /* CubeCollectionView.swift */,
 				914DC06921260019005F76DD /* StoryPlayerProgressTrackerView.swift */,
+				91A204D42150629300FFB337 /* JPlayer.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 				TargetAttributes = {
 					915365072116E0BF00442A99 = {
 						CreatedOnToolsVersion = 9.4.1;
+						LastSwiftMigration = 1000;
 					};
 				};
 			};
@@ -363,6 +367,7 @@
 				91AF9ABA21184D7400A34A65 /* EmbeddedStoryCollectionViewCell.swift in Sources */,
 				9153650C2116E0BF00442A99 /* AppDelegate.swift in Sources */,
 				91AF9ABE21184FA800A34A65 /* EmbeddedStorySectionController.swift in Sources */,
+				91A204D52150629300FFB337 /* JPlayer.swift in Sources */,
 				914DC06A21260019005F76DD /* StoryPlayerProgressTrackerView.swift in Sources */,
 				91AF9AB121181E8000A34A65 /* StoryCell.swift in Sources */,
 				91AF9AAD21181CF000A34A65 /* StorySectionController.swift in Sources */,
@@ -517,13 +522,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 69QS2C75F9;
 				INFOPLIST_FILE = InstagramStoriesClone/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = JDev.InstagramStoriesClone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -536,13 +542,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 69QS2C75F9;
 				INFOPLIST_FILE = InstagramStoriesClone/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = JDev.InstagramStoriesClone;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

@@ -23,6 +23,8 @@ class ViewController: UIViewController, ListAdapterDataSource {
         return collectionView
     }()
     
+    let refreshControl = UIRefreshControl()
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         adapter.performUpdates(animated: true, completion: nil)

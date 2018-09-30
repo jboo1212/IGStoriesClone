@@ -43,19 +43,22 @@ class StoryPlayerViewController: UIViewController {
         if #available(iOS 11, *) {
             collectionView.contentInsetAdjustmentBehavior = .never
         }
-        // MARK: TODO
-//        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tappedCollectionView(_ :)))
-//        collectionView.addGestureRecognizer(tapGestureRecognizer)
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tappedCollectionView(_ :)))
+        collectionView.addGestureRecognizer(tapGestureRecognizer)
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(storyWillAdvance(_ :)), name: .StoryWillAdvance, object: nil)
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.addObserver(self, selector: #selector(storyWillAdvance(_ :)), name: .StoryWillAdvance, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(storyWillRewind), name: .StoryWillRewind, object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        NotificationCenter.default.removeObserver(self, name: .StoryWillAdvance, object: PlayerView.self)
+        let notificationCenter = NotificationCenter.default
+        notificationCenter.removeObserver(self, name: .StoryWillAdvance, object: nil)
+        notificationCenter.removeObserver(self, name: .StoryWillRewind, object: nil)
     }
     
     override func viewDidLayoutSubviews() {
@@ -66,21 +69,21 @@ class StoryPlayerViewController: UIViewController {
         collectionView.setContentOffset(CGPoint(x: collectionView.frame.width * CGFloat(tappedIndex), y: 0), animated: false)
     }
     
-    // MARK: TODO
+    /*
+     If we tap on the leftish side of the Story, we'll go back a story or story item.
+     Else, skip.
+ */
     @objc private func tappedCollectionView(_ gesture: UITapGestureRecognizer) {
         let leftEdgeRectangle = CGRect(x: 0, y: 0, width: collectionView.frame.width/3, height: collectionView.frame.height)
-        let location = gesture.location(in: collectionView)
+        guard let currentCell = collectionView.visibleCells[0] as? StoryPlayerCell else { return }
+        let location = gesture.location(in: currentCell)
+        currentCell.playerBackingView.hasTapped = true
+
         if leftEdgeRectangle.contains(location) {
-            guard let currentCell = collectionView.visibleCells[0] as? StoryPlayerCell else { return }
-            currentCell.playerBackingView.rewind()
-            /*
-             If we tap back, we need to let the chain of objects know that we're going back a track;
-             therefore, the current animation will need to be stopped and reset back to 0, the previous track will need to be played
-             and the current item is current item - 1.
- */
+            currentCell.playerBackingView.player.rewind()
         }
         else {
-            // Else skip the story item or story depending on how many story items are left.
+            currentCell.playerBackingView.player.skip(skipsAutomatically: false)
         }
     }
     
@@ -95,6 +98,12 @@ class StoryPlayerViewController: UIViewController {
         guard let indexPath = collectionView.indexPath(for: currentCell) else { return }
         let story = storyModel.stories[indexPath.item]
         NotificationCenter.default.post(name: .StoryHasAdvanced, object: nil, userInfo: ["Story": story])
+    }
+    
+    @objc private func storyWillRewind() {
+        willAdvance = true
+        let currentCell = collectionView.visibleCells[0]
+        collectionView.setContentOffset(CGPoint(x: currentCell.frame.origin.x - collectionView.frame.width, y: 0), animated: true)
     }
     
     init(storyModel: StoryModel, story: Story) {
@@ -133,7 +142,15 @@ extension StoryPlayerViewController: UICollectionViewDataSource {
         let storyItems = storyModel.stories[indexPath.item].storyItems
         cell.playerBackingView.configureStoryItems(storyItems: storyItems)
         cell.storyDismissalDelegate = self
+        cell.playerBackingView.isLastCell = isLastCell(forCell: cell)
         return cell
+    }
+    
+    private func isLastCell(forCell cell: StoryPlayerCell) -> Bool {
+        if cell.frame.origin.x == 0 || cell.frame.origin.x == collectionView.contentSize.width - collectionView.frame.width {
+            return true
+        }
+        return false
     }
 }
 
@@ -189,6 +206,8 @@ extension StoryPlayerViewController: UICollectionViewDelegateFlowLayout {
         return .zero
     }
 }
+
+// MARK: StoryDismissalDelegate
 
 extension StoryPlayerViewController: StoryDismissalDelegate {
     func storyWasDismissed() {
